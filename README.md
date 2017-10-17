@@ -96,6 +96,20 @@ http.post(new FutureCallback() {
 });
 ```
 
+##### Como ficaria a requisção JSON
+
+```json
+{
+    "id" : 10,
+    "name" : "Weibson S'tos",
+    "user" : {
+        "login" : "weibson@stos.mobi",
+        "pass" : "202cb962ac59075b964b07152d234b70" 
+    }
+}
+```
+
+
 Licença
 -------
 
