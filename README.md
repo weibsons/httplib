@@ -14,7 +14,9 @@ Gradle:
 ```gradle
 
 dependencies {
-    compile 'mobi.stos:httplib:1'
+    compile ('mobi.stos:httplib:1') {
+        exclude group: 'com.android.support'
+    }
 }
 
 ```
