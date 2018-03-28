@@ -17,13 +17,21 @@ import mobi.stos.httplib.util.Logger;
 public class HttpAsync implements RestComposer {
 
     private boolean debug = false;
+    private boolean aceitarCertificadoInvalido = false;
 
     private final URL url;
     private final Map<String, Object> params;
+    private final Map<String, String> headers;
 
     public HttpAsync(URL url) {
         this.url = url;
         this.params = new HashMap<>();
+        this.headers = new HashMap<>();
+    }
+
+    public HttpAsync addHeader(String key, String value) {
+        headers.put(key, value);
+        return this;
     }
 
     public HttpAsync addParam(String key, Object value) {
@@ -47,12 +55,18 @@ public class HttpAsync implements RestComposer {
         return this;
     }
 
+    public void setAceitarCertificadoInvalido(boolean aceitarCertificadoInvalido) {
+        this.aceitarCertificadoInvalido = aceitarCertificadoInvalido;
+    }
+
     private void execute(final Method method, final FutureCallback callback) {
         CustomHttpTask task = new CustomHttpTask(this.url);
         task.setMethod(method);
+        task.addCustomHeader(this.headers);
         task.setParams(this.params);
         task.setCallback(callback);
         task.setDebug(this.debug);
+        task.setTrustAllCerts(this.aceitarCertificadoInvalido);
         task.execute();
     }
 

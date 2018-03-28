@@ -1,7 +1,6 @@
 package mobi.stos.httplib.task;
 
 import android.os.AsyncTask;
-import android.support.annotation.Nullable;
 import android.text.TextUtils;
 
 import org.json.JSONArray;
@@ -15,8 +14,15 @@ import java.io.InputStream;
 import java.io.InputStreamReader;
 import java.net.HttpURLConnection;
 import java.net.URL;
+import java.security.SecureRandom;
+import java.security.cert.X509Certificate;
 import java.util.Map;
 import java.util.zip.GZIPInputStream;
+
+import javax.net.ssl.HttpsURLConnection;
+import javax.net.ssl.SSLContext;
+import javax.net.ssl.TrustManager;
+import javax.net.ssl.X509TrustManager;
 
 import mobi.stos.httplib.enumm.Method;
 import mobi.stos.httplib.inter.FutureCallback;
@@ -31,14 +37,24 @@ public class CustomHttpTask extends AsyncTask<Void, Void, Object> {
     private final URL url;
     private FutureCallback callback;
     private Method method;
+    private boolean trustAllCerts;
 
     private Map<String, Object> params;
+    private Map<String, String> headers;
 
     private int statusCode;
     private Exception exception = null;
 
+    public void setTrustAllCerts(boolean trustAllCerts) {
+        this.trustAllCerts = trustAllCerts;
+    }
+
     public CustomHttpTask(URL url) {
         this.url = url;
+    }
+
+    public void addCustomHeader(Map<String, String> headers) {
+        this.headers = headers;
     }
 
     public void setMethod(Method method) {
@@ -57,8 +73,39 @@ public class CustomHttpTask extends AsyncTask<Void, Void, Object> {
         Logger.debug = debug;
     }
 
+    private void trustAllCertificates() {
+        try {
+            TrustManager[] trustAllCerts = new TrustManager[]{
+                    new X509TrustManager() {
+                        public X509Certificate[] getAcceptedIssuers() {
+                            X509Certificate[] myTrustedAnchors = new X509Certificate[0];
+                            return myTrustedAnchors;
+                        }
+
+                        @Override
+                        public void checkClientTrusted(X509Certificate[] certs, String authType) {
+                        }
+
+                        @Override
+                        public void checkServerTrusted(X509Certificate[] certs, String authType) {
+                        }
+                    }
+            };
+
+            SSLContext sc = SSLContext.getInstance("SSL");
+            sc.init(null, trustAllCerts, new SecureRandom());
+            HttpsURLConnection.setDefaultSSLSocketFactory(sc.getSocketFactory());
+            HttpsURLConnection.setDefaultHostnameVerifier((arg0, arg1) -> true);
+        } catch (Exception e) {
+        }
+    }
+
     @Override
     protected Object doInBackground(Void... voids) {
+        if (trustAllCerts) {
+            trustAllCertificates();
+        }
+
         Object object = null;
         HttpURLConnection connection = null;
         try {
@@ -73,6 +120,11 @@ public class CustomHttpTask extends AsyncTask<Void, Void, Object> {
             connection.setRequestProperty("charset", "utf-8");
             connection.setRequestProperty("Accept-Encoding", "gzip");
             connection.setUseCaches(false);
+            if (headers != null && !headers.isEmpty()) {
+                for (Map.Entry<String, String> map : headers.entrySet()) {
+                    connection.setRequestProperty(map.getKey(), map.getValue());
+                }
+            }
 
             if (params != null && !params.isEmpty()) {
                 JSONObject json = new JSONObject();
@@ -183,7 +235,6 @@ public class CustomHttpTask extends AsyncTask<Void, Void, Object> {
         }
     }
 
-    @Nullable
     private String inputStreamToString(InputStream inputStream) {
         try (BufferedReader br = new BufferedReader(new InputStreamReader(inputStream))) {
             StringBuilder total = new StringBuilder();
