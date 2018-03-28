@@ -14,9 +14,7 @@ Gradle:
 ```gradle
 
 dependencies {
-    compile ('mobi.stos:httplib:1') {
-        exclude group: 'com.android.support'
-    }
+    implementation 'mobi.stos:httplib:2'
 }
 
 ```
@@ -71,6 +69,7 @@ Exemplo do uso:
 ```java
 String url = "http://";
 HttpAsync http = new HttpAsync(new URL(url));
+http.setAceitarCertificadoInvalido(true); // aceitar SSL inválido (padrão = false)
 http.addParam("id", 10);
 http.addParam("name", "Weibson S'tos");
 http.addParam("user", "login", "weibson@stos.mobi");
