@@ -14,7 +14,7 @@ Gradle:
 ```gradle
 
 dependencies {
-    implementation 'mobi.stos:httplib:3'
+    implementation 'mobi.stos:httplib:4'
 }
 
 ```
