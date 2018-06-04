@@ -221,8 +221,6 @@ public class CustomHttpTask extends AsyncTask<Void, Void, Object> {
         Logger.d("onPostExecute");
 
         if (callback != null) {
-            callback.onAfterExecute();
-
             Logger.d("Processando retorno");
             if (exception != null) {
                 exception.printStackTrace();
@@ -232,6 +230,7 @@ public class CustomHttpTask extends AsyncTask<Void, Void, Object> {
                 Logger.d("Retornando dados com sucesso. Status Code: " + statusCode);
                 callback.onSuccess(statusCode, object);
             }
+            callback.onAfterExecute();
         }
     }
 
