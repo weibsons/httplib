@@ -1,14 +1,13 @@
 apply plugin: 'com.android.application'
 
 android {
-    compileSdkVersion 26
-    buildToolsVersion "26.0.2"
+    compileSdkVersion 27
     defaultConfig {
         applicationId "mobi.stos.http"
         minSdkVersion 14
-        targetSdkVersion 26
-        versionCode 3
-        versionName "1.0.2"
+        targetSdkVersion 27
+        versionCode 5
+        versionName "1.0.5"
         testInstrumentationRunner "android.support.test.runner.AndroidJUnitRunner"
     }
     buildTypes {
