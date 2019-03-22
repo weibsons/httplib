@@ -2,12 +2,16 @@ package mobi.stos.httplib;
 
 import android.os.AsyncTask;
 
+import org.json.JSONArray;
+import org.json.JSONObject;
+
 import java.net.URL;
 import java.util.HashMap;
 import java.util.Map;
 
 import mobi.stos.httplib.enumm.Method;
 import mobi.stos.httplib.inter.FutureCallback;
+import mobi.stos.httplib.inter.PreCallback;
 import mobi.stos.httplib.inter.ProgressCallback;
 import mobi.stos.httplib.inter.RestComposer;
 import mobi.stos.httplib.inter.SimpleCallback;
@@ -20,7 +24,7 @@ import mobi.stos.httplib.util.Logger;
 
 public class HttpAsync implements RestComposer {
 
-    private SimpleCallback onPreExecuteCallback;
+    private PreCallback onPreExecuteCallback;
     private SimpleCallback onSuccessCallback;
     private SimpleCallback onFailureCallback;
 
@@ -58,17 +62,56 @@ public class HttpAsync implements RestComposer {
         return this;
     }
 
+    public JSONObject getParams() {
+        if (!params.isEmpty()) {
+            try {
+                JSONObject json = new JSONObject();
+                for (Map.Entry<String, Object> map : params.entrySet()) {
+                    if (map.getValue() instanceof Map) {
+                        JSONObject iJson = new JSONObject();
+                        Map<String, Object> innerMap = (Map<String, Object>) map.getValue();
+                        for (Map.Entry<String, Object> inner : innerMap.entrySet()) {
+                            iJson.put(inner.getKey(), String.valueOf(inner.getValue()));
+                        }
+                        json.put(map.getKey(), iJson);
+                    } else if (map.getValue() instanceof JSONObject) {
+                        json.put(map.getKey(), map.getValue());
+                    } else if (map.getValue() instanceof JSONArray) {
+                        json.put(map.getKey(), map.getValue());
+                    } else {
+                        json.put(map.getKey(), String.valueOf(map.getValue()));
+                    }
+                }
+                return json;
+            } catch(Exception e){
+                return null;
+            }
+        } else {
+            return null;
+        }
+    }
+
     public HttpAsync setDebug(boolean debug) {
         Logger.debug = debug;
         this.debug = debug;
         return this;
     }
 
-    public HttpAsync addOnPreExecuteCallback(SimpleCallback callback) {
+    /**
+     * Sem retorno.
+     */
+    public HttpAsync addOnPreExecuteCallback(PreCallback callback) {
         this.onPreExecuteCallback = callback;
         return this;
     }
 
+    /**
+     * Ordem dos retornos do callback
+     * INDEX 0 = Status Code (Integer)
+     * INDEX 1 = JSONObject, JSONArray, String, Object, etc.
+     * @param callback
+     * @return
+     */
     public HttpAsync addOnSuccessCallback(SimpleCallback callback) {
         this.onSuccessCallback = callback;
         return this;
@@ -115,7 +158,7 @@ public class HttpAsync implements RestComposer {
         CustomHttpTask task = new CustomHttpTask(this.url);
         task.setMethod(method);
         task.addCustomHeader(this.headers);
-        task.setParams(this.params);
+        task.setParams(this.getParams());
         task.setCallback(callback);
         task.setOnPreExecuteCallback(this.onPreExecuteCallback);
         task.setOnSuccessCallback(this.onSuccessCallback);

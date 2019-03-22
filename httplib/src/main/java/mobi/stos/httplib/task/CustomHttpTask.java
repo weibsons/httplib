@@ -26,6 +26,7 @@ import javax.net.ssl.X509TrustManager;
 
 import mobi.stos.httplib.enumm.Method;
 import mobi.stos.httplib.inter.FutureCallback;
+import mobi.stos.httplib.inter.PreCallback;
 import mobi.stos.httplib.inter.SimpleCallback;
 import mobi.stos.httplib.util.Logger;
 
@@ -38,14 +39,14 @@ public class CustomHttpTask extends AsyncTask<Void, Void, Object> {
     private final URL url;
     private FutureCallback callback;
 
-    private SimpleCallback onPreExecuteCallback;
+    private PreCallback onPreExecuteCallback;
     private SimpleCallback onSuccessCallback;
     private SimpleCallback onFailureCallback;
 
     private Method method;
     private boolean trustAllCerts;
 
-    private Map<String, Object> params;
+    private JSONObject params;
     private Map<String, String> headers;
 
     private int statusCode;
@@ -71,7 +72,7 @@ public class CustomHttpTask extends AsyncTask<Void, Void, Object> {
         this.callback = callback;
     }
 
-    public void setParams(Map<String, Object> params) {
+    public void setParams(JSONObject params) {
         this.params = params;
     }
 
@@ -79,7 +80,7 @@ public class CustomHttpTask extends AsyncTask<Void, Void, Object> {
         Logger.debug = debug;
     }
 
-    public void setOnPreExecuteCallback(SimpleCallback onPreExecuteCallback) {
+    public void setOnPreExecuteCallback(PreCallback onPreExecuteCallback) {
         this.onPreExecuteCallback = onPreExecuteCallback;
     }
 
@@ -146,27 +147,10 @@ public class CustomHttpTask extends AsyncTask<Void, Void, Object> {
                 }
             }
 
-            if (params != null && !params.isEmpty()) {
-                JSONObject json = new JSONObject();
-                for (Map.Entry<String, Object> map : params.entrySet()) {
-                    if (map.getValue() instanceof Map) {
-                        JSONObject iJson = new JSONObject();
-                        Map<String, Object> innerMap = (Map<String, Object>) map.getValue();
-                        for (Map.Entry<String, Object> inner : innerMap.entrySet()) {
-                            iJson.put(inner.getKey(), String.valueOf(inner.getValue()));
-                        }
-                        json.put(map.getKey(), iJson);
-                    } else if (map.getValue() instanceof JSONObject) {
-                        json.put(map.getKey(), map.getValue());
-                    } else if (map.getValue() instanceof JSONArray) {
-                        json.put(map.getKey(), map.getValue());
-                    } else {
-                        json.put(map.getKey(), String.valueOf(map.getValue()));
-                    }
-                }
-                Logger.d(json.toString());
+            if (params != null) {
+                Logger.d(params.toString());
 
-                byte[] bytes = json.toString().getBytes("UTF-8");
+                byte[] bytes = params.toString().getBytes("UTF-8");
                 connection.setRequestProperty("Content-Length", Integer.toString(bytes.length));
 
                 DataOutputStream wr = new DataOutputStream(connection.getOutputStream());
