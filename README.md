@@ -36,7 +36,7 @@ void delete(FutureCallback callback);
 void execute(Method method);
 ```
 
-### Retorno do Callback | FutureCallback
+### Retorno do Callback `FutureCallback`
 Em caso de implementação do `FutureCallback`
 
 ```java
@@ -65,7 +65,7 @@ Retorna em caso de conseguir receber o retorno do HTTP, independente do HTTP Sta
 Retorna em caso de erro na requisição ou na resposta do HTTP. Ex> A função está aguardando receber um JSON e recebeu um HTML, ou em caso de erro de não conectividade.
 
 
-Exemplo do uso com FutureCallback:
+Exemplo do uso com `FutureCallback`:
 -----------------------
 
 ```java
@@ -115,7 +115,7 @@ http.post(new FutureCallback() {
 
 
 
-### Retorno do Callback | SimpleCallback
+### Retorno do Callback `SimpleCallback`
 Em caso de implementação do `SimpleCallback`
 ```java
 void onCallback(Object ... objects);
@@ -125,13 +125,13 @@ Como funciona o retorno do `SimpleCallback`
 -----------------------
 
 ##### void onCallback(Object ... objects);
-Executa na chamada do das funções: `addOnSuccessCallback` e `addOnFailureCallback`.
+Executa na chamada do das funções: `addOnSuccessCallback` e `addOnFailureCallback`.<br />
 Em caso de acesso através do `addOnSuccessCallback` os parâmetros da função serão:
 
 [0] - Integer - Status Code<br />
 [1] - Object
 
-Exemplo do uso com SimpleCallback:
+Exemplo do uso com `SimpleCallback`:
 -----------------------
 
 ```java
@@ -156,6 +156,18 @@ http.addOnFailureCallback( objects -> {
 
 });
 http.execute(Method.POST);
+```
+##### Como ficaria a requisção JSON
+
+```json
+{
+    "id" : 10,
+    "name" : "Weibson S'tos",
+    "user" : {
+        "login" : "weibson@stos.mobi",
+        "pass" : "202cb962ac59075b964b07152d234b70" 
+    }
+}
 ```
 
 
