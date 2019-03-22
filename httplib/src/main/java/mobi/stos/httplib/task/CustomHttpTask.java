@@ -26,6 +26,7 @@ import javax.net.ssl.X509TrustManager;
 
 import mobi.stos.httplib.enumm.Method;
 import mobi.stos.httplib.inter.FutureCallback;
+import mobi.stos.httplib.inter.SimpleCallback;
 import mobi.stos.httplib.util.Logger;
 
 /**
@@ -36,6 +37,11 @@ public class CustomHttpTask extends AsyncTask<Void, Void, Object> {
 
     private final URL url;
     private FutureCallback callback;
+
+    private SimpleCallback onPreExecuteCallback;
+    private SimpleCallback onSuccessCallback;
+    private SimpleCallback onFailureCallback;
+
     private Method method;
     private boolean trustAllCerts;
 
@@ -73,6 +79,18 @@ public class CustomHttpTask extends AsyncTask<Void, Void, Object> {
         Logger.debug = debug;
     }
 
+    public void setOnPreExecuteCallback(SimpleCallback onPreExecuteCallback) {
+        this.onPreExecuteCallback = onPreExecuteCallback;
+    }
+
+    public void setOnSuccessCallback(SimpleCallback onSuccessCallback) {
+        this.onSuccessCallback = onSuccessCallback;
+    }
+
+    public void setOnFailureCallback(SimpleCallback onFailureCallback) {
+        this.onFailureCallback = onFailureCallback;
+    }
+
     private void trustAllCertificates() {
         try {
             TrustManager[] trustAllCerts = new TrustManager[]{
@@ -97,6 +115,7 @@ public class CustomHttpTask extends AsyncTask<Void, Void, Object> {
             HttpsURLConnection.setDefaultSSLSocketFactory(sc.getSocketFactory());
             HttpsURLConnection.setDefaultHostnameVerifier((arg0, arg1) -> true);
         } catch (Exception e) {
+            //
         }
     }
 
@@ -110,6 +129,7 @@ public class CustomHttpTask extends AsyncTask<Void, Void, Object> {
         HttpURLConnection connection = null;
         try {
             Logger.d("Estabelecimento conexão com o endpoint...");
+            Logger.d("Endpoint: " + url.toString());
 
             connection = (HttpURLConnection) url.openConnection();
             connection.setDoInput(true);
@@ -213,6 +233,9 @@ public class CustomHttpTask extends AsyncTask<Void, Void, Object> {
         if (callback != null) {
             callback.onBeforeExecute();
         }
+        if (onPreExecuteCallback != null) {
+            onPreExecuteCallback.onCallback();
+        }
     }
 
     @Override
@@ -220,17 +243,29 @@ public class CustomHttpTask extends AsyncTask<Void, Void, Object> {
         super.onPostExecute(object);
         Logger.d("onPostExecute");
 
-        if (callback != null) {
+        if (callback != null || onSuccessCallback != null || onFailureCallback != null) {
             Logger.d("Processando retorno");
             if (exception != null) {
                 exception.printStackTrace();
                 Logger.d("Exceção gerada na conclusão do processo. Erro: " + exception.getMessage(), exception.getCause());
-                callback.onFailure(exception);
+                if (callback != null) {
+                    callback.onFailure(exception);
+                }
+                if (onFailureCallback != null) {
+                    onFailureCallback.onCallback(exception);
+                }
             } else {
                 Logger.d("Retornando dados com sucesso. Status Code: " + statusCode);
-                callback.onSuccess(statusCode, object);
+                if (callback != null) {
+                    callback.onSuccess(statusCode, object);
+                }
+                if (onSuccessCallback != null) {
+                    onSuccessCallback.onCallback(statusCode, object);
+                }
             }
-            callback.onAfterExecute();
+            if (callback != null) {
+                callback.onAfterExecute();
+            }
         }
     }
 

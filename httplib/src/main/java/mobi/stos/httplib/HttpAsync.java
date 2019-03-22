@@ -8,7 +8,9 @@ import java.util.Map;
 
 import mobi.stos.httplib.enumm.Method;
 import mobi.stos.httplib.inter.FutureCallback;
+import mobi.stos.httplib.inter.ProgressCallback;
 import mobi.stos.httplib.inter.RestComposer;
+import mobi.stos.httplib.inter.SimpleCallback;
 import mobi.stos.httplib.task.CustomHttpTask;
 import mobi.stos.httplib.util.Logger;
 
@@ -17,6 +19,10 @@ import mobi.stos.httplib.util.Logger;
  */
 
 public class HttpAsync implements RestComposer {
+
+    private SimpleCallback onPreExecuteCallback;
+    private SimpleCallback onSuccessCallback;
+    private SimpleCallback onFailureCallback;
 
     private boolean debug = false;
     private boolean aceitarCertificadoInvalido = false;
@@ -58,6 +64,21 @@ public class HttpAsync implements RestComposer {
         return this;
     }
 
+    public HttpAsync addOnPreExecuteCallback(SimpleCallback callback) {
+        this.onPreExecuteCallback = callback;
+        return this;
+    }
+
+    public HttpAsync addOnSuccessCallback(SimpleCallback callback) {
+        this.onSuccessCallback = callback;
+        return this;
+    }
+
+    public HttpAsync addOnFailureCallback(SimpleCallback callback) {
+        this.onFailureCallback = callback;
+        return this;
+    }
+
     /**
      * <p>A execução serial será por padrão TRUE.</p>
      * <p>Significa que existirá somente uma tarefa rodando em forma serial. (Uma tarefa acaba para
@@ -96,6 +117,9 @@ public class HttpAsync implements RestComposer {
         task.addCustomHeader(this.headers);
         task.setParams(this.params);
         task.setCallback(callback);
+        task.setOnPreExecuteCallback(this.onPreExecuteCallback);
+        task.setOnSuccessCallback(this.onSuccessCallback);
+        task.setOnFailureCallback(this.onFailureCallback);
         task.setDebug(this.debug);
         task.setTrustAllCerts(this.aceitarCertificadoInvalido);
         task.executeOnExecutor(execucaoSerial ? AsyncTask.SERIAL_EXECUTOR : AsyncTask.THREAD_POOL_EXECUTOR);
@@ -123,5 +147,10 @@ public class HttpAsync implements RestComposer {
     public void delete(FutureCallback callback) {
         Logger.d("Executando método delete");
         this.execute(Method.DELETE, callback);
+    }
+
+    @Override
+    public void execute(Method method) {
+        this.execute(method, null);
     }
 }
