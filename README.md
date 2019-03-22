@@ -37,7 +37,8 @@ void execute(Method method);
 ```
 
 
-##### As informações abaixo será para explicação com a implementando com a versão do FutureCallback
+As informações abaixo será para explicação com a implementando com a versão do FutureCallback
+-------
 
 ### Retorno do Callback `FutureCallback`
 Em caso de implementação do `FutureCallback`
@@ -116,7 +117,8 @@ http.post(new FutureCallback() {
 }
 ```
 
-##### As informações abaixo será para explicação com a implementando com a versão do SimpleCallback
+As informações abaixo será para explicação com a implementando com a versão do SimpleCallback
+-------
 
 ### Retorno do Callback `SimpleCallback`
 Em caso de implementação do `SimpleCallback`
