@@ -14,7 +14,7 @@ Gradle:
 ```gradle
 
 dependencies {
-    implementation 'mobi.stos:httplib:4'
+    implementation 'mobi.stos:httplib:5'
 }
 
 ```
@@ -70,6 +70,7 @@ Exemplo do uso:
 String url = "http://";
 HttpAsync http = new HttpAsync(new URL(url));
 http.setAceitarCertificadoInvalido(true); // aceitar SSL inválido (padrão = false)
+http.setExecucaoSerial(false); // executa as tarefas do http em forma serial ou assíncrona (padrão = true)
 http.addParam("id", 10);
 http.addParam("name", "Weibson S'tos");
 http.addParam("user", "login", "weibson@stos.mobi");
