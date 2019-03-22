@@ -14,7 +14,7 @@ Gradle:
 ```gradle
 
 dependencies {
-    implementation 'mobi.stos:httplib:5'
+    implementation 'mobi.stos:httplib:6'
 }
 
 ```
@@ -32,9 +32,11 @@ void post(FutureCallback callback);
 void put(FutureCallback callback);
 
 void delete(FutureCallback callback);
+
+void execute(Method method);
 ```
 
-### Retorno do Callback
+### Retorno do Callback | FutureCallback
 Em caso de implementação do `FutureCallback`
 
 ```java
@@ -63,7 +65,7 @@ Retorna em caso de conseguir receber o retorno do HTTP, independente do HTTP Sta
 Retorna em caso de erro na requisição ou na resposta do HTTP. Ex> A função está aguardando receber um JSON e recebeu um HTML, ou em caso de erro de não conectividade.
 
 
-Exemplo do uso:
+Exemplo do uso com FutureCallback:
 -----------------------
 
 ```java
@@ -109,6 +111,51 @@ http.post(new FutureCallback() {
         "pass" : "202cb962ac59075b964b07152d234b70" 
     }
 }
+```
+
+
+
+### Retorno do Callback | SimpleCallback
+Em caso de implementação do `SimpleCallback`
+```java
+void onCallback(Object ... objects);
+```
+
+Como funciona o retorno do `SimpleCallback`
+-----------------------
+
+##### void onCallback(Object ... objects);
+Executa na chamada do das funções: `addOnSuccessCallback` e `addOnFailureCallback`. Em caso de acesso através do 
+`addOnSuccessCallback` os parâmetros da função serão:
+
+[0] - Integer - Status Code
+[1] - Object
+
+Exemplo do uso com SimpleCallback:
+-----------------------
+
+```java
+String url = "http://";
+HttpAsync http = new HttpAsync(new URL(url));
+http.setAceitarCertificadoInvalido(true); // aceitar SSL inválido (padrão = false)
+http.setExecucaoSerial(false); // executa as tarefas do http em forma serial ou assíncrona (padrão = true)
+http.addParam("id", 10);
+http.addParam("name", "Weibson S'tos");
+http.addParam("user", "login", "weibson@stos.mobi");
+http.addParam("user", "pass", "202cb962ac59075b964b07152d234b70");
+http.addOnPreExecuteCallback( () -> {});
+http.addOnSuccessCallback( objects -> {
+    
+    int statusCode = (Integer) objects[0];
+    JSONArray jsonArray = (JSONArray) objects[1]; // nesse caso pode ser String, JSONObject, JSONArray, HTML, etc.
+    
+});
+http.addOnFailureCallback( objects -> {
+
+    Exception xyz = (Exception) objects[0];
+
+});
+http.execute(Method.POST);
 ```
 
 
