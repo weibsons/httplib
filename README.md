@@ -125,10 +125,10 @@ Como funciona o retorno do `SimpleCallback`
 -----------------------
 
 ##### void onCallback(Object ... objects);
-Executa na chamada do das funções: `addOnSuccessCallback` e `addOnFailureCallback`. Em caso de acesso através do 
-`addOnSuccessCallback` os parâmetros da função serão:
+Executa na chamada do das funções: `addOnSuccessCallback` e `addOnFailureCallback`.
+Em caso de acesso através do `addOnSuccessCallback` os parâmetros da função serão:
 
-[0] - Integer - Status Code
+[0] - Integer - Status Code<br />
 [1] - Object
 
 Exemplo do uso com SimpleCallback:
