@@ -46,6 +46,7 @@ public class CustomHttpTask extends AsyncTask<Void, Void, Object> {
     private Method method;
     private boolean trustAllCerts;
 
+    private JSONArray arrayParam;
     private JSONObject params;
     private Map<String, String> headers;
 
@@ -74,6 +75,10 @@ public class CustomHttpTask extends AsyncTask<Void, Void, Object> {
 
     public void setParams(JSONObject params) {
         this.params = params;
+    }
+
+    public void setArrayParam(JSONArray arrayParam) {
+        this.arrayParam = arrayParam;
     }
 
     public void setDebug(boolean debug) {
@@ -147,12 +152,18 @@ public class CustomHttpTask extends AsyncTask<Void, Void, Object> {
                 }
             }
 
-            if (params != null) {
-                Logger.d(params.toString());
+            if (params != null || arrayParam != null) {
 
-                byte[] bytes = params.toString().getBytes("UTF-8");
+                byte[] bytes;
+                if (params != null) {
+                    Logger.d(params.toString());
+                    bytes = params.toString().getBytes("UTF-8");;
+                } else {
+                    Logger.d(arrayParam.toString());
+                    bytes = arrayParam.toString().getBytes("UTF-8");
+                }
+
                 connection.setRequestProperty("Content-Length", Integer.toString(bytes.length));
-
                 DataOutputStream wr = new DataOutputStream(connection.getOutputStream());
                 wr.write(bytes, 0, bytes.length);
                 wr.flush();

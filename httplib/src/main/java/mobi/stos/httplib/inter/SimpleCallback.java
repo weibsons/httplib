@@ -7,7 +7,7 @@ public interface SimpleCallback {
      * Tipos de retorno:
      * 1. int (StatusCode), object (JSONArray, JSONObject, String)
      * 2. Exception
-     * @param objects
+     * @param objects Object
      */
     void onCallback(Object ... objects);
 

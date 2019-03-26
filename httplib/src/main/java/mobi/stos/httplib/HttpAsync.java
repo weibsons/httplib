@@ -35,6 +35,7 @@ public class HttpAsync implements RestComposer {
     private final URL url;
     private final Map<String, Object> params;
     private final Map<String, String> headers;
+    private JSONArray arrayParam;
 
     public HttpAsync(URL url) {
         this.url = url;
@@ -60,6 +61,15 @@ public class HttpAsync implements RestComposer {
         p.put(attr, value);
         params.put(key, p);
         return this;
+    }
+
+    public HttpAsync addArrayParam(JSONArray jsonArray) {
+        this.arrayParam = jsonArray;
+        return this;
+    }
+
+    public JSONArray getArrayParam() {
+        return this.arrayParam;
     }
 
     public JSONObject getParams() {
@@ -99,6 +109,8 @@ public class HttpAsync implements RestComposer {
 
     /**
      * Sem retorno.
+     * @param callback PreCallback
+     * @return HttpAsync
      */
     public HttpAsync addOnPreExecuteCallback(PreCallback callback) {
         this.onPreExecuteCallback = callback;
@@ -109,8 +121,8 @@ public class HttpAsync implements RestComposer {
      * Ordem dos retornos do callback
      * INDEX 0 = Status Code (Integer)
      * INDEX 1 = JSONObject, JSONArray, String, Object, etc.
-     * @param callback
-     * @return
+     * @param callback SimpleCallback
+     * @return HttpAsync
      */
     public HttpAsync addOnSuccessCallback(SimpleCallback callback) {
         this.onSuccessCallback = callback;
@@ -159,6 +171,7 @@ public class HttpAsync implements RestComposer {
         task.setMethod(method);
         task.addCustomHeader(this.headers);
         task.setParams(this.getParams());
+        task.setArrayParam(this.getArrayParam());
         task.setCallback(callback);
         task.setOnPreExecuteCallback(this.onPreExecuteCallback);
         task.setOnSuccessCallback(this.onSuccessCallback);
