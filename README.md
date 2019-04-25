@@ -186,16 +186,16 @@ Com a classe `HttpUploadAsync` você poderá enviar arquivos em formato de bytes
 
 Para o uso do upload é necessário realizar o preenchimento da função `addUploadData` com os seguintes parâmetros:
 
-##### file
+##### 1º file
 Preenchimento com o objeto File
 
-##### fileURI
+##### 2º fileURI
 Preenchimento com o caminho absoluto do file ou nome do arquivo
 
-##### fileContentType
+##### 3º fileContentType
 Preenchimento com o Content-Type do arquivo, exemplo: image/jpeg, audio/mp4, application/pdf, etc.
 
-##### input name
+##### 4º input name
 Nome de referência que será capturado para reconhecer o arquivo que está sEndo passado via upload no ENDPOINT.
 
 
