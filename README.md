@@ -198,9 +198,12 @@ Nome de referência que será capturado para reconhecer o arquivo que está sEnd
 
 Caso opte enviar mais dados de um formulário, como por exemplo, nome, idade, sexo, será necessário adicionar parâmetros ao `HttpUploadAsync`, então utiliza-se a função `addParam` onde o primeiro parâmetro é a chave e o segundo o valor. 
 
-Exemplo:
+##### Exemplo:
+
 nome = "Weibson S'tos" => `addParam("nome", "Weibson S'tos")`
+
 sexo = "M" => `addParam("sexo", "M")`
+
 idade = 30 => `addParam("idade", 30)`
 
 
