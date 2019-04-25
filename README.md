@@ -190,7 +190,7 @@ Preenchimento com o objeto File
 ##### fileURI
 Preenchimento com o caminho absoluto do file ou nome do arquivo
 
-##### file Content-Type
+##### fileContentType
 Preenchimento com o Content-Type do arquivo, exemplo: image/jpeg, audio/mp4, application/pdf, etc.
 
 ##### input name
@@ -218,7 +218,7 @@ httpUploadAsync.addOnSuccessCallback(objects -> {
     Log.v("LOG", "Response Body -> " + objects[1]);
 });
 httpUploadAsync.upload();
-
+```
 
 
 Licença
