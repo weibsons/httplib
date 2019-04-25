@@ -14,7 +14,7 @@ Gradle:
 ```gradle
 
 dependencies {
-    implementation 'mobi.stos:httplib:7'
+    implementation 'mobi.stos:httplib:8'
 }
 
 ```
@@ -174,6 +174,51 @@ http.execute(Method.POST);
     }
 }
 ```
+
+Criando requisição de UPLOAD com multipart/form-data
+-----------------------
+
+Para uso do http/https upload é necessário utilizar a classe `HttpUploadAsync` esssa classe possui parâmetros necessários para o upload de arquivos.
+
+Com a classe `HttpUploadAsync` você poderá enviar arquivos em formato de bytes via `Content-Disposition` como também outros dados extras de um formulário (inputs).
+
+Para o uso do upload é necessário realizar o preenchimento da função `addUploadData` com os seguintes parâmetros:
+
+##### file
+Preenchimento com o objeto File
+
+##### fileURI
+Preenchimento com o caminho absoluto do file ou nome do arquivo
+
+##### file Content-Type
+Preenchimento com o Content-Type do arquivo, exemplo: image/jpeg, audio/mp4, application/pdf, etc.
+
+##### input name
+Nome de referência que será capturado para reconhecer o arquivo que está sEndo passado via upload no ENDPOINT.
+
+Caso opte enviar mais dados de um formulário, como por exemplo, nome, idade, sexo, será necessário adicionar parâmetros ao `HttpUploadAsync`, então utiliza-se a função `addParam` onde o primeiro parâmetro é a chave e o segundo o valor. 
+
+Exemplo:
+nome = "Weibson S'tos" => `addParam("nome", "Weibson S'tos")`
+sexo = "M" => `addParam("sexo", "M")`
+idade = 30 => `addParam("idade", 30)`
+
+
+Exemplo do uso do `upload`:
+-----------------------
+
+```java
+File file = new File( <seu arquivo> );
+
+HttpUploadAsync httpUploadAsync = new HttpUploadAsync(new URL( <sua url> ));
+httpUploadAsync.addParam("foo", "bar");
+httpUploadAsync.addUploadData(file, file.getAbsolutePath(), "image/png", "arquivo");
+httpUploadAsync.addOnSuccessCallback(objects -> {
+    Log.v("LOG", "Response Code -> " + objects[0]);
+    Log.v("LOG", "Response Body -> " + objects[1]);
+});
+httpUploadAsync.upload();
+
 
 
 Licença
