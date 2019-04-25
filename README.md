@@ -182,6 +182,8 @@ Para uso do http/https upload é necessário utilizar a classe `HttpUploadAsync`
 
 Com a classe `HttpUploadAsync` você poderá enviar arquivos em formato de bytes via `Content-Disposition` como também outros dados extras de um formulário (inputs).
 
+### Criando um upload
+
 Para o uso do upload é necessário realizar o preenchimento da função `addUploadData` com os seguintes parâmetros:
 
 ##### file
@@ -195,6 +197,9 @@ Preenchimento com o Content-Type do arquivo, exemplo: image/jpeg, audio/mp4, app
 
 ##### input name
 Nome de referência que será capturado para reconhecer o arquivo que está sEndo passado via upload no ENDPOINT.
+
+
+### Adicionando campos extras
 
 Caso opte enviar mais dados de um formulário, como por exemplo, nome, idade, sexo, será necessário adicionar parâmetros ao `HttpUploadAsync`, então utiliza-se a função `addParam` onde o primeiro parâmetro é a chave e o segundo o valor. 
 
